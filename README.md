@@ -1,1 +1,1 @@
-# event-store-rs
+# dynamodb-event-store-rs
