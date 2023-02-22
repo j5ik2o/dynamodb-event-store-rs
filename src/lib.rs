@@ -1,5 +1,5 @@
+pub mod aggregates;
 pub mod events;
-mod aggregates;
 
 pub fn add(left: usize, right: usize) -> usize {
     left + right

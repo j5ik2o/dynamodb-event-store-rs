@@ -1,8 +1,6 @@
 use aws_config::meta::region::RegionProviderChain;
 use aws_sdk_dynamodb::{Client, Credentials};
 
-use event_store_rs::events::{Event, EventIO, EventKey};
-
 pub async fn build_dynamodb_client(host_port: u16) -> Client {
     let endpoint_uri = format!("http://127.0.0.1:{}", host_port);
     let region_provider = RegionProviderChain::default_provider().or_else("us-east-1");

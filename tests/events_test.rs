@@ -1,11 +1,13 @@
-mod dynamodb_local;
-
+use aws_sdk_dynamodb::model::{
+    AttributeDefinition, KeySchemaElement, KeyType, ProvisionedThroughput, ScalarAttributeType,
+};
 use aws_sdk_dynamodb::Client;
-use dynamodb_local::*;
-
-use aws_sdk_dynamodb::model::{AttributeDefinition, KeySchemaElement, KeyType, ProvisionedThroughput, ScalarAttributeType};
 use testcontainers::{clients, images};
+
+use dynamodb_local::*;
 use event_store_rs::events::{Event, EventIO, EventKey};
+
+mod dynamodb_local;
 
 async fn create_table(dynamodb: &Client, table_name: &str) {
     let pkey_key_schema = KeySchemaElement::builder()
@@ -48,8 +50,6 @@ async fn create_table(dynamodb: &Client, table_name: &str) {
     assert_eq!(list_tables_result.table_names().unwrap().len(), 1);
 }
 
-
-
 #[tokio::test]
 async fn test_dynamodb_local() {
     let docker = clients::Cli::default();
@@ -62,7 +62,12 @@ async fn test_dynamodb_local() {
 
     let event_io = EventIO::new(client, table_name);
 
-    let event = Event::new(EventKey::new("1".to_string(), "1".to_string()), "test", vec![1u8, 2, 3], 1);
+    let event = Event::new(
+        EventKey::new("1".to_string(), "1".to_string()),
+        "test",
+        vec![1u8, 2, 3],
+        1,
+    );
     event_io.write(event.clone()).await.unwrap();
 
     let id = event.primary_key().clone();
